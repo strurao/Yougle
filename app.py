@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request
 import youtube_data, videos_db_query, json
 import mongo
+import whisper_sample
 
 ############ Flask ############
 app = Flask(__name__)
@@ -30,9 +31,13 @@ def index():
     #return render_template('index.html', videos=videos_list_result, channel_id=channel_id)
 
 if __name__ == '__main__':
-    videos_db_query.create_tables_videosDB()
     print("0")
+    videos_db_query.create_tables_videosDB()
+    print("1")
+    whisper_sample.sample()
     # mongo.db.VideoCollection.delete_many({})
     app.run(debug=True)
-    print("1")
+
+
+    print("2")
 
