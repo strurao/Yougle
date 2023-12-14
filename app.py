@@ -1,0 +1,38 @@
+# flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일이다.
+from flask import Flask, render_template, request
+import youtube_data, videos_db_query, json
+import mongo
+
+############ Flask ############
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'sdklgjifjlsfjidsg'  # CSRF 보호를 위한 비밀 키 설정
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    response_data = {'videos': [], 'channel_id': ''}
+
+    if request.method == 'POST':
+        channel_id = request.form['channel_id']
+        if channel_id != '':
+            response_data['channel_id'] = channel_id
+            exists_in_mongo = videos_db_query.check_channel_id_in_tables(channel_id)
+            if exists_in_mongo:
+                # MongoDB에서 데이터 가져오기
+                mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
+                response_data['videos'] = mongo_data['videos'] if mongo_data else []
+                # SQLite에서 데이터 가져오기
+                # response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
+            else:
+                response_data['videos'] = youtube_data.get_channel_videos_and_save(channel_id)
+
+    # MongoDB에서 가져온 데이터를 JSON 형식으로 변환하여 템플릿에 전달
+    response_data['videos_json'] = json.dumps(response_data['videos'])
+    return render_template('index.html', data=response_data)
+    #return render_template('index.html', videos=videos_list_result, channel_id=channel_id)
+
+if __name__ == '__main__':
+    videos_db_query.create_tables_videosDB()
+    print("0")
+    # mongo.db.VideoCollection.delete_many({})
+    app.run(debug=True)
+    print("1")
+
