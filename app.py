@@ -12,20 +12,30 @@ load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 
-@app.route('/download/<video_id>')
-def download_video(video_id):
+@app.route('/download/<channel_id>/<video_id>')
+def download_video(channel_id, video_id):
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
-    video = youtube.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+    video = youtube.streams.filter(res='360p', progressive=True, file_extension='mp4').order_by('resolution').desc().first()
     if not video:
         return "Video not found", 404
-
-    download_path = video.download()
+    # 현재 스크립트 파일이 위치한 디렉토리의 절대 경로
+    current_dir = os.path.abspath(os.path.dirname(__file__))
+    # 프로젝트 루트 디렉토리를 찾기 (현재 디렉토리의 상위 디렉토리)
+    # project_root = os.path.dirname(current_dir)
+    # Yougle 프로젝트 루트 디렉토리 설정
+    project_root = 'C:\\Users\\redna\\PycharmProjects\\Yougle'
+    # videos 디렉토리 및 채널 ID 디렉토리 경로 설정
+    videos_path = os.path.join(project_root, 'videos', channel_id)
+    if not os.path.exists(videos_path):
+        os.makedirs(videos_path)  # 디렉토리가 없으면 생성
+    # 파일명 형식: whisper-channelid-videoid
+    filename = f"whisper-{channel_id}-{video_id}.mp4"
+    download_path = video.download(output_path=videos_path, filename=filename)
     return send_file(download_path, as_attachment=True)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     response_data = {'videos': [], 'channel_id': '', 'error': ''}
-
     if request.method == 'POST':
         channel_id = request.form['channel_id']
         if not youtube_data.validate_channel_id(channel_id):
