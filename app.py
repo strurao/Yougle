@@ -1,6 +1,7 @@
 # flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일입니다.
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import youtube_data, videos_db_query, json
+from pytube import YouTube
 import mongo
 import whisper_sample
 import os
@@ -10,6 +11,16 @@ load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 # Flask
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
+
+@app.route('/download/<video_id>')
+def download_video(video_id):
+    youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
+    video = youtube.streams.filter(progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+    if not video:
+        return "Video not found", 404
+
+    download_path = video.download()
+    return send_file(download_path, as_attachment=True)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

@@ -17,6 +17,8 @@
             <ul>
                 {% for video in data.videos %}
                     <li><a href="{{ video.link }}">{{ video.title }}</a></li>
+                    <a href="/download/{{ video.video_id }}">Click to Download</a>
+                    <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
                 {% endfor %}
             </ul>
         {% else %}
