@@ -17,7 +17,10 @@ def index():
 
     if request.method == 'POST':
         channel_id = request.form['channel_id']
-        if channel_id != '':
+        if not youtube_data.validate_channel_id(channel_id):
+            response_data['error'] = 'Invalid Channel ID.'
+            return render_template('index.html', data=response_data)
+        try:
             response_data['channel_id'] = channel_id
             exists_in_mongo = videos_db_query.check_channel_id_in_tables(channel_id)
             if exists_in_mongo:
@@ -28,6 +31,9 @@ def index():
                 # response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
             else:
                 response_data['videos'] = youtube_data.get_channel_videos_and_save(channel_id)
+        except Exception as e:
+            response_data['error'] = f'An error occurred: {str(e)}'
+            print(e)
 
     # MongoDB에서 가져온 데이터를 JSON 형식으로 변환하여 템플릿에 전달
     response_data['videos_json'] = json.dumps(response_data['videos'])

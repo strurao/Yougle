@@ -11,6 +11,18 @@ api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
 ################### youtube data api를 활용 ########################
 ##################################################################
 
+# YouTube 채널 ID가 유효한지 검증하는 함수
+def validate_channel_id(channel_id):
+    if not channel_id:
+        return False
+    if not channel_id.startswith('UC'):
+        return False
+    if not len(channel_id) == 24:
+        return False
+    if not re.match('^[a-zA-Z0-9_-]+$', channel_id):
+        return False
+    return True
+
 # DB에 없을 때 channel_id 유튜브의 모든 동영상 목록을 return. json 파일 MongoDB에 저장
 def get_channel_videos_and_save(channel_id):
     cid = videos_db_query.get_cid_by_channel_id(channel_id)

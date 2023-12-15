@@ -36,5 +36,12 @@
             {% endfor %}
         </ul>
     {% endif %}
+
+     <!-- 오류 메시지 표시 -->
+    {% if data.error %}
+        <div class="error-message">
+            {{ data.error }}
+        </div>
+    {% endif %}
 </body>
 </html>
