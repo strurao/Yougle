@@ -3,13 +3,17 @@ from flask import Flask, render_template, request
 import youtube_data, videos_db_query, json
 import mongo
 import whisper_sample
+import os
+from dotenv import load_dotenv
+load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 
-############ Flask ############
+# Flask
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'sdklgjifjlsfjidsg'  # CSRF 보호를 위한 비밀 키 설정
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    response_data = {'videos': [], 'channel_id': ''}
+    response_data = {'videos': [], 'channel_id': '', 'error': ''}
 
     if request.method == 'POST':
         channel_id = request.form['channel_id']
@@ -37,7 +41,5 @@ if __name__ == '__main__':
     whisper_sample.sample()
     # mongo.db.VideoCollection.delete_many({})
     app.run(debug=True)
-
-
     print("2")
 
