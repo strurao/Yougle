@@ -4,6 +4,7 @@ import json
 import re
 import videos_db_query
 import mongo
+import os
 
 # api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
 api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
@@ -20,14 +21,14 @@ def validate_channel_id(channel_id):
         return False
     return True
 
-# DB에 없을 때 channel_id 유튜브의 모든 동영상 목록을 return. json 파일 MongoDB에 저장
-def get_channel_videos_and_save(channel_id):
+# DB에 없을 때 sqlite, mongodb 각각에 저장
+def update_db(channel_id):
     cid = videos_db_query.get_cid_by_channel_id(channel_id)
 
     if not cid:
         youtube = build('youtube', 'v3', developerKey=api_key)
-        video_info = []
-        video_info_mongo = []
+        video_info = [] # sqlite
+        video_info_mongo = [] # mongodb
         next_page_token = None
 
         while True:
@@ -40,14 +41,14 @@ def get_channel_videos_and_save(channel_id):
             ).execute()
 
             for item in res['items']:
-                video_info.append({
+                video_info.append({ # sqlite
                     "channel_id": channel_id,
                     "video_id": item['id']['videoId'],
                     "title": item['snippet']['title'],
                     "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}'
                 })
             for item in res['items']:
-                video_info_mongo.append({
+                video_info_mongo.append({ # mongodb
                     # "channel_id": channel_id,
                     "video_id": item['id']['videoId'],
                     "title": item['snippet']['title'],
@@ -61,12 +62,14 @@ def get_channel_videos_and_save(channel_id):
         cid = videos_db_query.insert_into_channel(channel_id)
         for video in video_info:
             video['cid'] = cid
-        videos_db_query.insert_into_video(video_info)
+        videos_db_query.insert_into_video(video_info) # sqlite
 
-        if not videos_db_query.check_channel_id_in_mongodb(channel_id):
-            videos_db_query.save_to_mongodb(channel_id, video_info_mongo)
+        videos_db_query.save_to_mongodb(channel_id, video_info_mongo)  # mongodb
 
+        #if not videos_db_query.check_channel_id_in_mongodb(channel_id):
+            #videos_db_query.save_to_mongodb(channel_id, video_info_mongo) # mongodb
     # return videos_db_query.get_videos_by_cid(cid)
+
     '''
     # 결과를 JSON 파일로 저장
     channel_info = {

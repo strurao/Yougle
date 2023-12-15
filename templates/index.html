@@ -18,6 +18,7 @@
                 {% for video in data.videos %}
                     <li><a href="{{ video.link }}">{{ video.title }}</a></li>
                     <a href="/download/{{ data.channel_id }}/{{ video.video_id }}">Click to Download</a>
+                    <!--mongodb 버전이었다. 제목을 누르면 바로 다운로드가 되는 코드-->
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
                 {% endfor %}
             </ul>

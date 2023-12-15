@@ -12,6 +12,7 @@ load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 
+
 @app.route('/download/<channel_id>/<video_id>')
 def download_video(channel_id, video_id):
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
@@ -33,6 +34,7 @@ def download_video(channel_id, video_id):
     download_path = video.download(output_path=videos_path, filename=filename)
     return send_file(download_path, as_attachment=True)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     response_data = {'videos': [], 'channel_id': '', 'error': ''}
@@ -43,19 +45,34 @@ def index():
             return render_template('index.html', data=response_data)
         try:
             response_data['channel_id'] = channel_id
-            exists_in_mongo = videos_db_query.check_channel_id_in_tables(channel_id)
-            if not exists_in_mongo:
-                youtube_data.get_channel_videos_and_save(channel_id)
-            mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
-            response_data['videos'] = mongo_data['videos'] if mongo_data else []
+
+            # bool check values
+            exists_in_mongo = videos_db_query.check_channel_id_in_mongodb(channel_id)
+            exists_in_sqlite = videos_db_query.check_channel_id_in_sqlite(channel_id)
+            # mongo, sqlite 에 없다면 upsert. 목록을 return
+            if not exists_in_mongo and exists_in_sqlite:
+                youtube_data.update_db(channel_id)
+
+            # mongo 에 있다면 json 데이터 출력하도록
+            #if exists_in_mongo:
+                #mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
+                #response_data['videos'] = mongo_data['videos'] if mongo_data else []
+
+            # sqlite 에 있다면
+            if exists_in_sqlite:
+                response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
+
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             print(e)
 
-    # MongoDB에서 가져온 데이터를 JSON 형식으로 변환하여 템플릿에 전달
-    response_data['videos_json'] = json.dumps(response_data['videos'])
+    # mongo 에서 가져온 데이터를 JSON 형식으로 변환하여 템플릿에 전달
+    #response_data['videos_json'] = json.dumps(response_data['videos'])
+    #return render_template('index.html', data=response_data)
+
+    # sqlite 에서 innerjoin한 결과 리스트를 템플릿에 전달
     return render_template('index.html', data=response_data)
-    #return render_template('index.html', videos=videos_list_result, channel_id=channel_id)
+
 
 if __name__ == '__main__':
     print("0")

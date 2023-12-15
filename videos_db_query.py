@@ -20,6 +20,22 @@ def get_videos_from_mongodb(channel_id):
 def check_channel_id_in_mongodb(channel_id):
     return mongo.collection.find_one({"channel_id": channel_id}) is not None
 
+def check_channel_id_in_sqlite(channel_id):
+    # SQLite 데이터베이스에 연결
+    with sqlite3.connect('videos.db') as connect:
+        cursor = connect.cursor()
+        # 채널 ID 조회
+        cursor.execute("SELECT EXISTS(SELECT 1 FROM channel WHERE channel_id = ?)", (channel_id,))
+        exists = cursor.fetchone()[0]
+        return exists == 1
+
+def check_channel_id_in_both_db(channel_id):
+    # MongoDB에서 확인
+    in_mongodb = check_channel_id_in_mongodb(channel_id)
+    # SQLite에서 확인
+    in_sqlite = check_channel_id_in_sqlite(channel_id)
+    return in_mongodb and in_sqlite
+
 # CREATE 'video', 'channel' table in SQLite videos.db
 def create_tables_videosDB():
     with sqlite3.connect('videos.db') as connect:
@@ -99,25 +115,12 @@ def innerjoin_by_channel_id(channel_id):
             cursor.execute(query, (channel_cid[0],))
             rows = cursor.fetchall()
 
-            video_info = [{"channel_id": row[0],
+            video_info = [{"vid": row[0],
                    "video_id": row[1],
                    "title": row[2],
                    "link": row[3]} for row in rows]
             print(video_info)
-    return [video_info]
-    '''
-    # JSON 파일에 저장할 비디오 정보 생성
-    video_info = [{"channel_id": row[0], "video_id": row[1], "title": row[2], "link": row[3]} for row in rows]
-
-    # 결과를 JSON 파일로 저장
-    channel_info = {
-        "channel_id": channel_id,
-        "videos": video_info
-    }
-    with open(f'info_{channel_id}.json', 'w', encoding='utf-8') as f:
-        json.dump(channel_info, f, indent=4, ensure_ascii=False)
-    print(f"채널 ID와 각 동영상의 정보가 'info_{channel_id}.json' 파일로 저장되었습니다.")
-    '''
+    return video_info
 
 def get_cid_by_channel_id(channel_id):
     with sqlite3.connect('videos.db') as connect:
