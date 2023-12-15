@@ -1,3 +1,4 @@
+# youtube data api를 활용합니다.
 from googleapiclient.discovery import build
 import json
 import re
@@ -6,10 +7,6 @@ import mongo
 
 # api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
 api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
-
-##################################################################
-################### youtube data api를 활용 ########################
-##################################################################
 
 # YouTube 채널 ID가 유효한지 검증하는 함수
 def validate_channel_id(channel_id):

@@ -1,11 +1,7 @@
-# videos_db_query.py
+# db 를 쿼리합니다.
 import sqlite3
 import json
 import mongo
-
-##################################################################
-################### videos.db 를 쿼리합니다. ########################
-##################################################################
 
 # Upsert 'video', 'channel' table in MongoDB
 def save_to_mongodb(channel_id, video_info_mongo):

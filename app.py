@@ -1,4 +1,4 @@
-# flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일이다.
+# flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일입니다.
 from flask import Flask, render_template, request
 import youtube_data, videos_db_query, json
 import mongo
