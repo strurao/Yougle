@@ -69,7 +69,7 @@ def get_channel_videos_and_save(channel_id):
         if not videos_db_query.check_channel_id_in_mongodb(channel_id):
             videos_db_query.save_to_mongodb(channel_id, video_info_mongo)
 
-    return videos_db_query.get_videos_by_cid(cid)
+    # return videos_db_query.get_videos_by_cid(cid)
     '''
     # 결과를 JSON 파일로 저장
     channel_info = {

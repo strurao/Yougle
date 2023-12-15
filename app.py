@@ -18,19 +18,15 @@ def index():
     if request.method == 'POST':
         channel_id = request.form['channel_id']
         if not youtube_data.validate_channel_id(channel_id):
-            response_data['error'] = 'Invalid Channel ID.'
+            response_data['error'] = 'Invalid Channel ID. Enter again please!'
             return render_template('index.html', data=response_data)
         try:
             response_data['channel_id'] = channel_id
             exists_in_mongo = videos_db_query.check_channel_id_in_tables(channel_id)
-            if exists_in_mongo:
-                # MongoDB에서 데이터 가져오기
-                mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
-                response_data['videos'] = mongo_data['videos'] if mongo_data else []
-                # SQLite에서 데이터 가져오기
-                # response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
-            else:
-                response_data['videos'] = youtube_data.get_channel_videos_and_save(channel_id)
+            if not exists_in_mongo:
+                youtube_data.get_channel_videos_and_save(channel_id)
+            mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
+            response_data['videos'] = mongo_data['videos'] if mongo_data else []
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             print(e)
@@ -44,7 +40,7 @@ if __name__ == '__main__':
     print("0")
     videos_db_query.create_tables_videosDB()
     print("1")
-    whisper_sample.sample()
+    # whisper_sample.sample()
     # mongo.db.VideoCollection.delete_many({})
     app.run(debug=True)
     print("2")
