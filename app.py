@@ -1,4 +1,6 @@
 # flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일입니다.
+import shutil
+import time
 from flask import Flask, render_template, request, send_file
 import youtube_data, videos_db_query, json
 from pytube import YouTube
@@ -16,24 +18,37 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비�
 @app.route('/download/<channel_id>/<video_id>')
 def download_video(channel_id, video_id):
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
-    video = youtube.streams.filter(res='360p', progressive=True, file_extension='mp4').order_by('resolution').desc().first()
+    video = youtube.streams.filter(res='360p', progressive=True, file_extension='mp4').order_by(
+        'resolution').desc().first()
     if not video:
         return "Video not found", 404
-    # 현재 스크립트 파일이 위치한 디렉토리의 절대 경로
-    current_dir = os.path.abspath(os.path.dirname(__file__))
-    # 프로젝트 루트 디렉토리를 찾기 (현재 디렉토리의 상위 디렉토리)
-    # project_root = os.path.dirname(current_dir)
-    # Yougle 프로젝트 루트 디렉토리 설정
-    project_root = 'C:\\Users\\redna\\PycharmProjects\\Yougle'
-    # videos 디렉토리 및 채널 ID 디렉토리 경로 설정
-    videos_path = os.path.join(project_root, 'videos', channel_id)
-    if not os.path.exists(videos_path):
-        os.makedirs(videos_path)  # 디렉토리가 없으면 생성
-    # 파일명 형식: whisper-channelid-videoid
-    filename = f"whisper-{channel_id}-{video_id}.mp4"
-    download_path = video.download(output_path=videos_path, filename=filename)
-    return send_file(download_path, as_attachment=True)
 
+    downloads_path = 'C:\\Users\\redna\\Downloads'
+    filename = f"whisper-{channel_id}-{video_id}.mp4"
+    download_file_path = os.path.join(downloads_path, filename)
+
+    # Downloads 폴더에 파일이 없으면 다운로드
+    if not os.path.exists(download_file_path):
+        video.download(output_path=downloads_path, filename=filename)
+        print(f"Downloaded to: {download_file_path}")
+    else:
+        print(f"File already exists in downloads path: {download_file_path}")
+
+    current_directory = os.getcwd()
+    project_root = current_directory
+    videos_path = os.path.join(project_root, 'videos', channel_id)
+
+    # videos/channel_id 폴더가 없으면 생성
+    if not os.path.exists(videos_path):
+        os.makedirs(videos_path)
+
+    destination_file_path = os.path.join(videos_path, filename)
+
+    # 파일을 videos/channel_id 폴더로 이동
+    shutil.move(download_file_path, destination_file_path)
+    print(f"Moved to: {destination_file_path}")
+
+    return send_file(destination_file_path, as_attachment=True)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -75,7 +90,9 @@ def index():
 
 
 if __name__ == '__main__':
-    print("0")
+    current_directory = os.getcwd()
+    print("현재 작업 디렉토리:", current_directory)
+
     videos_db_query.create_tables_videosDB()
     print("1")
     # whisper_sample.sample()
