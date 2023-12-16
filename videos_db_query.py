@@ -12,6 +12,28 @@ def save_to_mongodb(channel_id, video_info_mongo):
     )
     print(f"채널 ID {channel_id}의 정보가 MongoDB에 저장되었습니다.")
 
+def check_transcription_none(channel_id, video_id):
+    # MongoDB 쿼리 실행
+    result = mongo.collection.find_one(
+        {"channel_id": channel_id, "videos.video_id": video_id},
+        {"videos.$": 1}
+    )
+    # 결과 확인 및 반환
+    if result is not None and 'videos' in result:
+        video_info = result['videos'][0]
+        return video_info.get('transcription') is None # null 이면 return True
+    else:
+        return None  # 채널 ID 또는 비디오 ID가 잘못되었거나 결과가 없는 경우
+
+def upsert_mongodb_trans(channel_id, video_id, transcription):
+    # MongoDB에 upsert 작업 수행
+    mongo.collection.update_one(
+        {"channel_id": channel_id, "videos.video_id": video_id},  # 찾을 문서의 조건
+        {"$set": {"videos.$.transcription": transcription}},  # 업데이트할 내용
+        upsert=True  # 해당하는 문서가 없으면 새로운 문서를 삽입
+    )
+    print("upsert_mongodb_trans: ", transcription)
+
 # MongoDB에서 채널 정보 가져오기
 def get_videos_from_mongodb(channel_id):
     return mongo.collection.find_one({"channel_id": channel_id})
