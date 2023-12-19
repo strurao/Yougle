@@ -29,13 +29,15 @@ def download_video(channel_id, video_id):
     youtube_data.convert_mp4_to_mp3(mp4_path, mp3_path)
 
     # whisper, transcription
-    transcription = whisper_trans.transcribe_audio(mp3_path)
-    print("transcription", transcription)
     not_exist_json_in_mongo = videos_db_query.check_transcription_none(channel_id, video_id)
-    print(not_exist_json_in_mongo)
-    if not_exist_json_in_mongo:
+    if not_exist_json_in_mongo: # 없으면 저장
+        transcription = whisper_trans.transcribe_audio(mp3_path)
+        print("transcription", transcription)
         videos_db_query.upsert_mongodb_trans(channel_id, video_id, transcription)
-        print("app.py : upserted mongodb", channel_id, video_id, transcription)
+        print("app.py : upserted transcription in mongodb", channel_id, video_id, transcription)
+    if not not_exist_json_in_mongo: # 있으면 꺼내오기
+        # transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
+        print("app.py : transcription already exists in mongo")
     return send_file(mp3_path, as_attachment=True)
 
 
