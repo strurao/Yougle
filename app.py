@@ -47,7 +47,9 @@ def index():
         if not youtube_data.validate_channel_id(channel_id):
             response_data['error'] = 'Invalid Channel ID. Enter again please!'
             return render_template('index.html', data=response_data)
-        print("validate!!!")
+
+        #if youtube_data.validate_channel_id(channel_id):
+            #print("validate!!!")
         try:
             response_data['channel_id'] = channel_id
             # bool check values
@@ -58,6 +60,7 @@ def index():
             # if not exists_in_sqlite:
                 print("none!!!")
                 youtube_data.update_db(channel_id)
+                response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
             # mongo 에 있다면 json 데이터 출력하도록
             #if exists_in_mongo:
                 #mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
