@@ -5,10 +5,13 @@
     font-weight: 400;
     font-style: normal;
 }
-
 /* 전체 페이지에 NanumBarunpen 폰트 적용 */
 body {
     font-family: 'Pretendard-Regular', sans-serif;
+}
+/* channel id 색 */
+.channel-id {
+    color: #3498db; /* 원하는 색상 코드 */
 }
 
 /* 카드 스타일 */
@@ -32,7 +35,7 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
-/* Click to Download 버튼 스타일링 */
+/* Click to Download 버튼 스타일링 & 호버 효과 */
 .download-link {
     display: inline-block;
     padding: 10px 15px;
