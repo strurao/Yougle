@@ -68,11 +68,13 @@ body {
 
 /* 설명 컨테이너 스타일 */
 .description-container {
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    text-align: center; /* 텍스트 가운데 정렬 */
+    max-width: 600px; /* 컨테이너 최대 너비 */
+    margin: 0 auto; /* 좌우 마진 자동으로 설정하여 가운데 정렬 */
+    padding: 20px; /* 패딩 */
+    background-color: #f9f9f9; /* 배경색 */
+    border-radius: 8px; /* 라운드 코너 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
 }
 /* 설명 텍스트 스타일 */
 .description-container h1,
@@ -87,3 +89,40 @@ body {
     cursor: pointer;
 }
 */
+
+/* 폼 스타일 */
+form {
+    font-family: 'Pretendard-Regular', sans-serif;
+    max-width: 400px;
+    margin: 0 auto;
+    margin-top: 20px; /* 폼과 설명 사이 간격 */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+/* 입력 필드 스타일 */
+input[type="text"] {
+    font-family: 'Pretendard-Regular', sans-serif;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+/* 버튼 스타일 */
+input[type="submit"] {
+    font-family: 'Pretendard-Regular', sans-serif;
+    width: 100%;
+    padding: 10px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+input[type="submit"]:hover {
+    background-color: #2980b9;
+}
