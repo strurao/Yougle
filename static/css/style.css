@@ -65,3 +65,25 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* 설명 컨테이너 스타일 */
+.description-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+/* 설명 텍스트 스타일 */
+.description-container h1,
+.description-container p {
+    color: #333;
+    margin-bottom: 10px;
+}
+/* 호버 효과 추가 */
+/*
+.description-container p:hover {
+    color: #3498db;
+    cursor: pointer;
+}
+*/

@@ -10,32 +10,38 @@
 </head>
 <body>
     <!-- 설명 -->
-    <h1>Enter YouTube Channel ID</h1>
-    <p>궁금한 유튜브 채널에서 "채널 자세히 알아보기"를 클릭하세요.</p>
-    <p>"채널 공유"를 클릭하세요.</p>
-    <p>"채널 ID 복사"를 클릭하세요.</p>
-    <p>이제 복사된 채널 ID를 아래 빈칸에 붙여넣기해 주세요!</p>
+    <div class="description-container">
+        <h1>Get Whisper Subtitle by Channel ID</h1>
+        <p>1. 궁금한 유튜브 채널에서 <strong>채널 자세히 알아보기</strong>를 클릭하세요.</p>
+        <p>2. <strong>채널 공유</strong>를 클릭하세요.</p>
+        <p>3. <strong>채널 ID 복사</strong>를 클릭하세요.</p>
+        <p>4. 이제 복사된 채널 ID를 <strong>아래 빈칸에 붙여넣기</strong>해 주세요!</p>
+        <!-- 폼 -->
+        <form method="POST" action="/" onsubmit="handleSubmit()">
+            <input type="text" name="channel_id" placeholder="Channel ID">
+            <input type="submit" id="getVideosButton" value="Get Videos">
+        </form>
+    </div>
 
      <!-- 로딩 애니메이션 -->
     <div id="loadingAnimation" style="display: none;">
         <div class="loader"></div>
     </div>
 
-    <!-- 폼 -->
-    <form method="POST" action="/" onsubmit="handleSubmit()">
-        <input type="text" name="channel_id" placeholder="Channel ID">
-        <input type="submit" id="getVideosButton" value="Get Videos">
-    </form>
+
 
     <!-- 비디오 링크 그리드 컨테이너 -->
     {% if data.channel_id %}
-        <h2>Video Links:</h2>
-        <h5>채널 ID {{ data.channel_id }}의 정보가 표시됩니다.</h5>
+        <h2>Video Links</h2>
+        <h5>채널 ID <span class="channel-id">{{ data.channel_id }}</span> 의 정보가 표시됩니다.</h5>
+        <p>제목을 누르면 유튜브 링크로 이동합니다.</p>
+        <p>Download Subtitle 버튼을 눌러서 자막 정보를 MongoDB 에 저장할 수 있습니다.</p>
         {% if data.videos %}
             <div class="grid-container">
                 {% for video in data.videos %}
                 <div class="card">
                     <a href="{{ video.link }}" class="video-link">{{ video.title }}</a>
+                    <p> </p>
                     <a href="/download/{{ data.channel_id }}/{{ video.video_id }}" class="download-link">Download Subtitle</a>
                     <!--mongodb 버전이었다. 제목을 누르면 바로 다운로드가 되는 코드-->
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
