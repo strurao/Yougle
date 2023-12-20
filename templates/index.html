@@ -3,7 +3,6 @@
 <head>
     <!-- CSS 파일 참조 -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
     <!-- JavaScript 파일 참조 -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
@@ -28,27 +27,29 @@
         <input type="submit" id="getVideosButton" value="Get Videos">
     </form>
 
-        {% if data.channel_id %}
+    <!-- 비디오 링크 그리드 컨테이너 -->
+    {% if data.channel_id %}
         <h2>Video Links:</h2>
         <h5>채널 ID {{ data.channel_id }}의 정보가 표시됩니다.</h5>
         {% if data.videos %}
-            <ul>
+            <div class="grid-container">
                 {% for video in data.videos %}
-                    <li><a href="{{ video.link }}">{{ video.title }}</a></li>
-                    <a href="/download/{{ data.channel_id }}/{{ video.video_id }}"> ⬆ Click to Download</a>
+                <div class="card">
+                    <a href="{{ video.link }}" class="video-link">{{ video.title }}</a>
+                    <a href="/download/{{ data.channel_id }}/{{ video.video_id }}" class="download-link">Download Subtitle</a>
                     <!--mongodb 버전이었다. 제목을 누르면 바로 다운로드가 되는 코드-->
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
+                </div>
                 {% endfor %}
-            </ul>
+            </div>
         {% else %}
             <p>No videos found for this channel.</p>
         {% endif %}
-
-        <h2>JSON Data:</h2>
-        <pre>{{ data.videos_json }}</pre>
     {% endif %}
 
     {% if videos and channel_id %}
+        <h2>JSON Data:</h2>
+        <pre>{{ data.videos_json }}</pre>
         <h2>Video Links(by SQLite):</h2>
         <h5>채널 ID와 각 동영상의 정보가 'info_{{ channel_id }}.json' 파일로 저장되었습니다.</h5>
         <ul>
