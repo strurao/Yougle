@@ -62,17 +62,17 @@
                 {% endif %}
 
                 {% set page_offset = 2 %}
-    {% set start_page = [data.current_page - page_offset, 1]|max %}
-    {% set end_page = [start_page + 4, data.total_pages]|min %}
+                {% set start_page = [data.current_page - page_offset, 1]|max %}
+                {% set end_page = [start_page + 4, data.total_pages]|min %}
 
-    <!-- 현재 페이지 주변의 페이지 번호들 -->
-    {% for page in range(start_page, end_page + 1) %}
-        {% if page == data.current_page %}
-            <a href="/?page={{ page }}&channel_id={{ data.channel_id }}" style="background-color: #2980b9; color: white;">{{ page }}</a>
-        {% else %}
-            <a href="/?page={{ page }}&channel_id={{ data.channel_id }}">{{ page }}</a>
-        {% endif %}
-    {% endfor %}
+                <!-- 현재 페이지 주변의 페이지 번호들 -->
+                {% for page in range(start_page, end_page + 1) %}
+                    {% if page == data.current_page %}
+                        <a href="/?page={{ page }}&channel_id={{ data.channel_id }}" style="background-color: #2980b9; color: white;">{{ page }}</a>
+                    {% else %}
+                        <a href="/?page={{ page }}&channel_id={{ data.channel_id }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
 
                 <!-- 다음 페이지 버튼 -->
                 {% if data.current_page < data.total_pages %}
