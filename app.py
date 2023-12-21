@@ -43,7 +43,7 @@ def download_video(channel_id, video_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    response_data = {'videos': [], 'channel_id': '', 'error': '', 'video_cnt': 0, 'published_at': '', 'channel_name': ''}
+    response_data = {'videos': [], 'channel_id': '', 'error': '', 'video_cnt': 0, 'published_at': '', 'channel_name': '', 'channel_link': ''}
     if request.method == 'POST':
         channel_id = request.form['channel_id']
         if not youtube_data.validate_channel_id(channel_id):
@@ -65,6 +65,7 @@ def index():
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
                 response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
                 response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
+                response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
             # mongo 에 있다면 json 데이터 출력하도록
             #if exists_in_mongo:
                 #mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
@@ -74,6 +75,7 @@ def index():
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
                 response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
                 response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
+                response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             print(e)

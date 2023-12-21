@@ -196,6 +196,10 @@ def get_channel_name(channel_id):
         result = cursor.fetchone()
         return result[0] if result else None
 
+# 유튜브 링크 생성
+def get_channel_link(channel_id):
+    return f"https://www.youtube.com/channel/{channel_id}"
+
 ##################################################################
 ######################### not using ##############################
 ##################################################################
