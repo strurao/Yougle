@@ -44,7 +44,12 @@
                 <div class="card">
                     <a href="{{ video.link }}" class="video-link">{{ video.title }}</a>
                     <p class="published-date">{{ video.published_at }}</p><!--업로드 날짜 표시-->
-                    <a href="/download/{{ data.channel_id }}/{{ video.video_id }}" class="download-link">Download Subtitle</a>
+                    <!-- transcription 존재 여부에 따라 버튼 상태와 메시지를 변경합니다. -->
+                    {% if video.transcription_exists %}
+                        <button disabled>이미 DB에 있어요</button>
+                    {% else %}
+                        <a href="/download/{{ data.channel_id }}/{{ video.video_id }}" class="download-link">Download Subtitle</a>
+                    {% endif %}
                     <!--mongodb 버전이었다. 제목을 누르면 바로 다운로드가 되는 코드-->
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
                 </div>

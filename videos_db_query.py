@@ -142,6 +142,7 @@ def innerjoin_by_channel_id(channel_id):
         cursor = connect.cursor()
         cursor.execute("SELECT cid FROM channel WHERE channel_id = ?", (channel_id,))
         channel_cid = cursor.fetchone()
+        video_info = []
         if channel_cid:
             query = """
                 SELECT video.vid, video.video_id, video.title, video.link, video.published_at
@@ -153,12 +154,19 @@ def innerjoin_by_channel_id(channel_id):
             cursor.execute(query, (channel_cid[0],))
             rows = cursor.fetchall()
 
-            video_info = [{"vid": row[0],
-                "video_id": row[1],
-                "title": row[2],
-                "link": row[3],
-                "published_at": row[4]} for row in rows]
-            print(video_info)
+            for row in rows:
+                video_id = row[1]
+                transcription_exists = check_transcription_none(channel_id, video_id) is False # 없으면 True, 있으면 False
+                print("transcription_exists", transcription_exists)
+                video_info.append({
+                    "vid": row[0],
+                    "video_id": video_id,
+                    "title": row[2],
+                    "link": row[3],
+                    "published_at": row[4],
+                    "transcription_exists": transcription_exists
+                })
+
     return video_info
 
 def get_cid_by_channel_id(channel_id):
@@ -215,7 +223,21 @@ def get_videos_by_page(channel_id, page, per_page):
         """
         cursor.execute(query, (channel_id, per_page, offset))
         rows = cursor.fetchall()
-        return [{"vid": row[0], "video_id": row[1], "title": row[2], "link": row[3], "published_at": row[4]} for row in rows]
+        # 비디오 정보에 transcription 존재 여부 추가
+        video_info = []
+        for row in rows:
+            video_id = row[1]
+            transcription_exists = check_transcription_none(channel_id, video_id) is not True
+            video_info.append({
+                "vid": row[0],
+                "video_id": video_id,
+                "title": row[2],
+                "link": row[3],
+                "published_at": row[4],
+                "transcription_exists": transcription_exists
+            })
+
+        return video_info
 
 ##################################################################
 ######################### not using ##############################
