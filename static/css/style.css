@@ -56,6 +56,40 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+.exists-in-db:disabled {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #7a7a7a; /* 원하는 비활성화 색상 */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.downloading-button {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #80FF00; /* 초록 배경 */
+    color: white; /* 어두운 글자색 */
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer; /* 비활성화된 커서 스타일 */
+}
+/* 기존 .download-link 스타일에 disabled 상태 추가 */
+.download-link:disabled {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #7a7a7a;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer; /* 비활성화된 커서 스타일 */
+}
 
 /* 로딩 애니메이션 위치 조정 */
 #loadingAnimation {

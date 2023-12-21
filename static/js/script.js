@@ -20,4 +20,30 @@ function showLoadingAnimation() {
     document.getElementById('loadingAnimation').style.display = 'block';
 }
 
+// 자막 다운로드 함수
+function downloadSubtitle(channelId, videoId, button) {
+    // 버튼 비활성화 및 스타일 변경
+    button.disabled = true;
+    button.className = 'downloading-button';
+    button.innerHTML = 'Downloading...';
 
+    // 로딩 애니메이션 요소 생성 및 추가
+    var loader = document.createElement('div');
+    loader.className = 'loader';
+    button.parentNode.insertBefore(loader, button.nextSibling);
+
+    fetch(`/download/${channelId}/${videoId}`)
+        .then(response => {
+            // 다운로드 후 처리
+
+            // 페이지 새로고침
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            button.disabled = false;
+            button.className = 'download-link';
+            button.innerHTML = 'Download Subtitle';
+            loader.remove();
+        });
+}
