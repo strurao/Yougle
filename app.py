@@ -67,10 +67,6 @@ def index():
             if not exists_in_mongo and not exists_in_sqlite:
             # if not exists_in_sqlite:
                 youtube_data.update_db(channel_id)
-                response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
-                response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
-                response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
-                response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
                 print("!!! not in dbs")
             # mongo 에 있다면 json 데이터 출력하도록
             #if exists_in_mongo:
@@ -78,15 +74,15 @@ def index():
                 #response_data['videos'] = mongo_data['videos'] if mongo_data else []
             # sqlite 에 있다면
             elif exists_in_sqlite:
-                response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
-                response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
-                response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
-                response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
                 print("!!! in sqlite")
 
+            response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
+            response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
+            response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
+            response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
-            print(e)
+            # print(e)
             return render_template('index.html', data=response_data)
 
     # 페이지네이션 처리는 POST와 무관하게 수행
