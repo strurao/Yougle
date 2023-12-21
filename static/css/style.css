@@ -35,7 +35,7 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
-/* Click to Download 버튼 스타일링 & 호버 효과 */
+/* Download Subtitle 버튼 스타일링 & 호버 효과 */
 .download-link {
     display: inline-block;
     padding: 10px 15px;
