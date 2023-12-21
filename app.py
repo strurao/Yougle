@@ -84,5 +84,5 @@ if __name__ == '__main__':
     print("현재 작업 디렉토리:", os.getcwd())
     videos_db_query.create_tables_videosDB()
     # mongo.db.VideoCollection.delete_many({})
-    app.run(debug=True)
+    app.run(host='203.152.178.190', port=5000, debug=True)
 

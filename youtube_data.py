@@ -7,8 +7,8 @@ from moviepy.editor import VideoFileClip
 import mongo
 import os
 
-# api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
-api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
+api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
+# api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
 
 # mp4->mp3 변환
 def convert_mp4_to_mp3(mp4_file_path, mp3_file_path):
@@ -46,7 +46,8 @@ def update_db(channel_id):
                 channelId=channel_id,
                 maxResults=50,
                 pageToken=next_page_token,
-                type='video'
+                type='video',
+                order = 'date'  # 결과를 최신 순으로 정렬
             ).execute()
 
             for item in res['items']:
@@ -54,7 +55,8 @@ def update_db(channel_id):
                     "channel_id": channel_id,
                     "video_id": item['id']['videoId'],
                     "title": item['snippet']['title'],
-                    "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}'
+                    "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}',
+                    "published_at": item['snippet']['publishedAt']  # 업로드 날짜 추가
                 })
 
             for item in res['items']:
@@ -63,7 +65,8 @@ def update_db(channel_id):
                     "video_id": item['id']['videoId'],
                     "title": item['snippet']['title'],
                     "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}',
-                    "transcription": None # JSON
+                    "transcription": None, # JSON
+                    "published_at": item['snippet']['publishedAt']  # 업로드 날짜 추가
                 })
 
             next_page_token = res.get('nextPageToken')

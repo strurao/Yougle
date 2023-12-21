@@ -34,6 +34,18 @@ def upsert_mongodb_trans(channel_id, video_id, transcription):
     )
     print("upsert_mongodb_trans: ", transcription)
 
+def find_mongodb_trans(channel_id, video_id):
+    # MongoDB 에서 자막 정보 찾기
+    result = mongo.collection.find_one(
+        {"channel_id": channel_id, "videos.video_id": video_id},
+        {"videos.$": 1}  # videos 배열에서 해당 비디오 ID의 문서만 반환
+    )
+    # 결과에서 transcription 값 추출 및 반환
+    if result is not None and 'videos' in result and len(result['videos']) > 0:
+        return result['videos'][0].get('transcription')
+    else:
+        return None  # 해당하는 transcription 정보가 없는 경우
+
 # MongoDB에서 채널 정보 가져오기
 def get_videos_from_mongodb(channel_id):
     return mongo.collection.find_one({"channel_id": channel_id})
@@ -79,6 +91,7 @@ def create_tables_videosDB():
                 video_id TEXT,
                 title TEXT,
                 link TEXT,
+                published_at TEXT,
                 FOREIGN KEY (cid) REFERENCES channel(cid)
             )
         """)
@@ -100,9 +113,9 @@ def insert_into_video(videos_list):
                 if not cursor.fetchone():
                     # 중복되지 않은 경우, 새로운 레코드 삽입
                     cursor.execute("""
-                                INSERT INTO video (cid, video_id, title, link)
-                                VALUES (?, ?, ?, ?)
-                            """, (channel_cid[0], video['video_id'], video['title'], video['link']))
+                                INSERT INTO video (cid, video_id, title, link, published_at)
+                                VALUES (?, ?, ?, ?, ?)
+                            """, (channel_cid[0], video['video_id'], video['title'], video['link'], video['published_at']))
         connect.commit()
 
 # INSERT INTO 'channel' table if not in DB
@@ -129,18 +142,20 @@ def innerjoin_by_channel_id(channel_id):
         channel_cid = cursor.fetchone()
         if channel_cid:
             query = """
-                SELECT video.vid, video.video_id, video.title, video.link
+                SELECT video.vid, video.video_id, video.title, video.link, video.published_at
                 FROM video
                 INNER JOIN channel ON video.cid = channel.cid
                 WHERE channel.cid = ?
+                ORDER BY video.published_at DESC
             """
             cursor.execute(query, (channel_cid[0],))
             rows = cursor.fetchall()
 
             video_info = [{"vid": row[0],
-                   "video_id": row[1],
-                   "title": row[2],
-                   "link": row[3]} for row in rows]
+                "video_id": row[1],
+                "title": row[2],
+                "link": row[3],
+                "published_at": row[4]} for row in rows]
             print(video_info)
     return video_info
 
