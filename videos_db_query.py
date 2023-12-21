@@ -173,6 +173,19 @@ def get_videos_by_cid(cid):
         videos = [row[0] for row in cursor.fetchall()]
     return videos
 
+# sqlite 에서 특정 채널에 속하는 영상의 개수를 알아내기
+def get_video_count(channel_id):
+    with sqlite3.connect('videos.db') as connect:
+        cursor = connect.cursor()
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM video
+            INNER JOIN channel ON video.cid = channel.cid
+            WHERE channel.channel_id = ?
+        """, (channel_id,))
+        count = cursor.fetchone()[0]
+        return count
+
 ##################################################################
 ######################### not using ##############################
 ##################################################################

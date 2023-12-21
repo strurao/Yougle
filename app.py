@@ -43,7 +43,7 @@ def download_video(channel_id, video_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    response_data = {'videos': [], 'channel_id': '', 'error': ''}
+    response_data = {'videos': [], 'channel_id': '', 'error': '', 'video_cnt': 0}
     if request.method == 'POST':
         channel_id = request.form['channel_id']
         if not youtube_data.validate_channel_id(channel_id):
@@ -63,6 +63,7 @@ def index():
                 print("none!!!")
                 youtube_data.update_db(channel_id)
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
+                response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
             # mongo 에 있다면 json 데이터 출력하도록
             #if exists_in_mongo:
                 #mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
@@ -70,6 +71,7 @@ def index():
             # sqlite 에 있다면
             if exists_in_sqlite:
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
+                response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             print(e)
