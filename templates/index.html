@@ -43,7 +43,7 @@
                 {% for video in data.videos %}
                 <div class="card">
                     <a href="{{ video.link }}" class="video-link">{{ video.title }}</a>
-                    <p> </p>
+                    <p class="published-date">{{ video.published_at }}</p><!--업로드 날짜 표시-->
                     <a href="/download/{{ data.channel_id }}/{{ video.video_id }}" class="download-link">Download Subtitle</a>
                     <!--mongodb 버전이었다. 제목을 누르면 바로 다운로드가 되는 코드-->
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->

@@ -13,7 +13,10 @@ body {
 .channel-id {
     color: #3498db; /* 원하는 색상 코드 */
 }
-
+/* 업로드 날짜 스타일 */
+.published-date {
+    color: #7a7a7a; /* 옅은 회색 */
+}
 /* 카드 스타일 */
 .card {
     text-align: center; /* 텍스트 가운데 정렬 */
