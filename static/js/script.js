@@ -29,7 +29,7 @@ function downloadSubtitle(channelId, videoId, button) {
 
     // 로딩 애니메이션 요소 생성 및 추가
     var loader = document.createElement('div');
-    loader.className = 'loader';
+    loader.className = 'loader-downloading';
     button.parentNode.insertBefore(loader, button.nextSibling);
 
     fetch(`/download/${channelId}/${videoId}`)
