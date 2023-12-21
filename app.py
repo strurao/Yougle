@@ -103,6 +103,7 @@ def index():
         channel_name = videos_db_query.get_channel_name(channel_id)
         if channel_name:
             response_data['channel_name'] = channel_name  # 채널 이름 설정
+            response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
 
         print("!!! pagination")
 
