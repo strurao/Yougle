@@ -7,8 +7,9 @@ from moviepy.editor import VideoFileClip
 import mongo
 import os
 
-api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
+# api_key = 'AIzaSyAcmY_raQoSUrz6wb-CgZ5fS0FvGweW4pU' # Yooougle
 # api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
+api_key = 'AIzaSyCKrtb3S0YXnbXsoh1zKLv3dieVeii_uwg' # YouglePractice
 
 # mp4->mp3 변환
 def convert_mp4_to_mp3(mp4_file_path, mp3_file_path):
@@ -39,6 +40,13 @@ def update_db(channel_id):
         video_info = [] # sqlite
         video_info_mongo = [] # mongodb
         next_page_token = None
+
+        # 유튜브 채널 정보를 가져와 채널 이름을 추출합니다.
+        channel_response = youtube.channels().list(
+            part='snippet',
+            id=channel_id
+        ).execute()
+        channel_name = channel_response['items'][0]['snippet']['title'] if channel_response['items'] else 'Unknown'
 
         while True:
             res = youtube.search().list(
@@ -73,7 +81,7 @@ def update_db(channel_id):
             if not next_page_token:
                 break
 
-        cid = videos_db_query.insert_into_channel(channel_id)
+        cid = videos_db_query.insert_into_channel(channel_id, channel_name)
         for video in video_info:
             video['cid'] = cid
         videos_db_query.insert_into_video(video_info) # sqlite

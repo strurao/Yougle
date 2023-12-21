@@ -78,7 +78,8 @@ def create_tables_videosDB():
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS channel (
                 cid INTEGER PRIMARY KEY AUTOINCREMENT, 
-                channel_id TEXT
+                channel_id TEXT,
+                channel_name TEXT
             )
         """)
         connect.commit()
@@ -119,13 +120,14 @@ def insert_into_video(videos_list):
         connect.commit()
 
 # INSERT INTO 'channel' table if not in DB
-def insert_into_channel(channel_id):
+def insert_into_channel(channel_id, channel_name):
     with sqlite3.connect('videos.db') as connect:
         cursor = connect.cursor()
         if not cursor.execute("SELECT 1 FROM channel WHERE channel_id = ?", (channel_id,)).fetchone():
-            cursor.execute("INSERT INTO channel (channel_id) VALUES (?)", (channel_id,))
+            cursor.execute("INSERT INTO channel (channel_id, channel_name) VALUES (?, ?)", (channel_id, channel_name))
         connect.commit()
         return cursor.lastrowid  # 새로 삽입된 채널의 cid 반환
+
 
 # 사용자로부터 입력받은 channel_id로, video 테이블과 channel 테이블 존재 여부 확인
 def check_channel_id_in_tables(channel_id):
@@ -185,6 +187,14 @@ def get_video_count(channel_id):
         """, (channel_id,))
         count = cursor.fetchone()[0]
         return count
+
+# sqlite 에서 특정 채널의 이름 알아내기
+def get_channel_name(channel_id):
+    with sqlite3.connect('videos.db') as connect:
+        cursor = connect.cursor()
+        cursor.execute("SELECT channel_name FROM channel WHERE channel_id = ?", (channel_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None
 
 ##################################################################
 ######################### not using ##############################
