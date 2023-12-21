@@ -10,7 +10,7 @@ body {
     font-family: 'Pretendard-Regular', sans-serif;
 }
 /* channel id 색 */
-.channel-id {
+.channel-info {
     color: #3498db; /* 원하는 색상 코드 */
 }
 /* 업로드 날짜 스타일 */
