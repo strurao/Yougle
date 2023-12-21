@@ -75,23 +75,25 @@ def index():
             # sqlite 에 있다면
             elif exists_in_sqlite:
                 print("!!! in sqlite")
-
+            '''
             response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
             response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
             response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
             response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
+            '''
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             # print(e)
             return render_template('index.html', data=response_data)
 
     # 페이지네이션 처리는 POST와 무관하게 수행
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get('page', 1, type=int) # 페이지 번호 # HTTP GET
     per_page = 30  # 한 페이지당 비디오 수
     if channel_id:
         response_data['channel_id'] = channel_id
         total_videos = videos_db_query.get_video_count(channel_id)
-        total_pages = (total_videos + per_page - 1) // per_page
+        total_pages = (total_videos + per_page - 1) // per_page # 총 페이지 수는 전체 동영상 수를 페이지당 동영상 수로 나누어 계산
+        # 현재 페이지에 대한 정보와 함께, 채널 이름과 링크도 함께 업데이트하여 response_data에 저장
         response_data['videos'] = videos_db_query.get_videos_by_page(channel_id, page, per_page)
         response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
         response_data['total_pages'] = total_pages
@@ -113,6 +115,6 @@ def index():
 if __name__ == '__main__':
     print("현재 작업 디렉토리:", os.getcwd())
     videos_db_query.create_tables_videosDB()
-    mongo.db.VideoCollection.delete_many({})
+    # mongo.db.VideoCollection.delete_many({})
     app.run(host='203.152.178.190', port=5000, debug=True)
 
