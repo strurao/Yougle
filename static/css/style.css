@@ -65,6 +65,11 @@ body {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+/* 비활성화된 버튼 스타일 */
+input[type="submit"]:disabled {
+    background-color: #cccccc; /* 회색 */
+    cursor: not-allowed; /* 커서 변경 */
+}
 
 /* 설명 컨테이너 스타일 */
 .description-container {
