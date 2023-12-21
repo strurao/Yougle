@@ -200,6 +200,23 @@ def get_channel_name(channel_id):
 def get_channel_link(channel_id):
     return f"https://www.youtube.com/channel/{channel_id}"
 
+# 특정 페이지의 비디오만 조회하는 쿼리
+def get_videos_by_page(channel_id, page, per_page):
+    with sqlite3.connect('videos.db') as connect:
+        cursor = connect.cursor()
+        offset = (page - 1) * per_page
+        query = """
+            SELECT video.vid, video.video_id, video.title, video.link, video.published_at
+            FROM video
+            INNER JOIN channel ON video.cid = channel.cid
+            WHERE channel.channel_id = ?
+            ORDER BY video.published_at DESC
+            LIMIT ? OFFSET ?
+        """
+        cursor.execute(query, (channel_id, per_page, offset))
+        rows = cursor.fetchall()
+        return [{"vid": row[0], "video_id": row[1], "title": row[2], "link": row[3], "published_at": row[4]} for row in rows]
+
 ##################################################################
 ######################### not using ##############################
 ##################################################################

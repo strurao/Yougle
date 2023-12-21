@@ -29,7 +29,6 @@
     </div>
 
     <!-- 비디오 링크 그리드 컨테이너 -->
-
     {% if data.channel_id %}
         <div class="data-description-container">
         <!--<h2>Video Links & Subtitle</h2>-->
@@ -50,6 +49,36 @@
                     <!--<a href="/download/{{ video.id }}">{{ video.title }}</a>-->
                 </div>
                 {% endfor %}
+            </div>
+
+            <!-- 페이지네이션 컨트롤 -->
+            <div class="pagination">
+                <!-- 첫 페이지 버튼 -->
+                <a href="/?page=1{{ '&channel_id=' + data.channel_id if data.channel_id else '' }}">First</a>
+
+                <!-- 이전 페이지 버튼 -->
+                {% if data.current_page > 1 %}
+                <a href="/?page={{ data.current_page - 1 }}{{ '&channel_id=' + data.channel_id if data.channel_id else '' }}">Prev</a>
+                {% endif %}
+
+                <!-- 페이지 번호들 -->
+                {% for page in range(1, data.total_pages + 1) %}
+                    {% if page == data.current_page %}
+                        <!-- 현재 페이지에 대한 링크에 특별한 스타일 적용 -->
+                        <a href="/?page={{ page }}&channel_id={{ data.channel_id }}" style="background-color: #2980b9; color: white;">{{ page }}</a>
+                    {% else %}
+                        <!-- 다른 페이지 링크 -->
+                        <a href="/?page={{ page }}&channel_id={{ data.channel_id }}">{{ page }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- 다음 페이지 버튼 -->
+                {% if data.current_page < data.total_pages %}
+                <a href="/?page={{ data.current_page + 1 }}{{ '&channel_id=' + data.channel_id if data.channel_id else '' }}">Next</a>
+                {% endif %}
+
+                <!-- 마지막 페이지 버튼 -->
+                <a href="/?page={{ data.total_pages }}{{ '&channel_id=' + data.channel_id if data.channel_id else '' }}">Last</a>
             </div>
         {% else %}
             <p>No videos found for this channel.</p>

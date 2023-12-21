@@ -43,7 +43,13 @@ def download_video(channel_id, video_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    response_data = {'videos': [], 'channel_id': '', 'error': '', 'video_cnt': 0, 'published_at': '', 'channel_name': '', 'channel_link': ''}
+    response_data = {'videos': [], 'channel_id': '', 'error': '',
+                     'video_cnt': 0, 'published_at': '', 'channel_name': '',
+                     'channel_link': '', 'total_pages': 0, 'current_page': 1} # 기본값으로 current_page를 1로 설정
+
+    # GET 요청에서 채널 ID 가져오기
+    channel_id = request.args.get('channel_id', '')
+
     if request.method == 'POST':
         channel_id = request.form['channel_id']
         if not youtube_data.validate_channel_id(channel_id):
@@ -60,30 +66,51 @@ def index():
             # mongo, sqlite 에 없다면 upsert. 목록을 return
             if not exists_in_mongo and not exists_in_sqlite:
             # if not exists_in_sqlite:
-                print("none!!!")
                 youtube_data.update_db(channel_id)
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
                 response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
                 response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
                 response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
+                print("!!! not in dbs")
             # mongo 에 있다면 json 데이터 출력하도록
             #if exists_in_mongo:
                 #mongo_data = videos_db_query.get_videos_from_mongodb(channel_id)
                 #response_data['videos'] = mongo_data['videos'] if mongo_data else []
             # sqlite 에 있다면
-            if exists_in_sqlite:
+            elif exists_in_sqlite:
                 response_data['videos'] = videos_db_query.innerjoin_by_channel_id(channel_id)
                 response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
                 response_data['channel_name'] = videos_db_query.get_channel_name(channel_id)
                 response_data['channel_link'] = videos_db_query.get_channel_link(channel_id)
+                print("!!! in sqlite")
+
         except Exception as e:
             response_data['error'] = f'An error occurred: {str(e)}'
             print(e)
+            return render_template('index.html', data=response_data)
+
+    # 페이지네이션 처리는 POST와 무관하게 수행
+    page = request.args.get('page', 1, type=int)
+    per_page = 30  # 한 페이지당 비디오 수
+    if channel_id:
+        response_data['channel_id'] = channel_id
+        total_videos = videos_db_query.get_video_count(channel_id)
+        total_pages = (total_videos + per_page - 1) // per_page
+        response_data['videos'] = videos_db_query.get_videos_by_page(channel_id, page, per_page)
+        response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
+        response_data['total_pages'] = total_pages
+        response_data['current_page'] = page
+        channel_name = videos_db_query.get_channel_name(channel_id)
+        if channel_name:
+            response_data['channel_name'] = channel_name  # 채널 이름 설정
+
+        print("!!! pagination")
+
+    return render_template('index.html', data=response_data)
     # mongo 에서 가져온 데이터를 JSON 형식으로 변환하여 템플릿에 전달
     #response_data['videos_json'] = json.dumps(response_data['videos'])
     #return render_template('index.html', data=response_data)
     # sqlite 에서 innerjoin한 결과 리스트를 템플릿에 전달
-    return render_template('index.html', data=response_data)
 
 
 if __name__ == '__main__':

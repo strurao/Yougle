@@ -147,3 +147,36 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #2980b9;
 }
+
+/* 페이지네이션 스타일 */
+.pagination {
+    text-align: center;
+    padding: 20px 0;
+     display: block; /* Changed from inline-block to block */
+    margin-left: auto; /* Automatically adjust left margin */
+    margin-right: auto; /* Automatically adjust right margin */
+}
+.pagination a {
+    margin: 0 5px;
+    padding: 8px 16px;
+    border: 1px solid #ddd;
+    color: #666;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+ .pagination a:hover {
+    background-color: #eee;
+    color: #333;
+}
+.pagination a.active {
+    background-color: #3498db; /* 활성 페이지 색상 */
+    color: white;
+    border-color: #3498db;
+}
+/* 페이지네이션 링크가 비활성화된 경우 */
+.pagination a.disabled {
+    color: grey;
+    cursor: not-allowed;
+    background-color: transparent;
+}
