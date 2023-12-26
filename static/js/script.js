@@ -8,6 +8,7 @@ function handleSubmit() {
 // 페이지 로드 시 enableButton 함수를 호출
 window.onload = enableButton;
 
+// 새로고침
 function redirectToHome() {
             window.location.href = '/'; // 홈페이지 URL로 리다이렉트
 }
@@ -52,3 +53,20 @@ function downloadSubtitle(channelId, videoId, button) {
         });
 }
 
+// 다운로드 중 다른 행동을 할 때 띄우는 팝업
+// <button onclick="confirmDownload()">Download</button>
+function confirmDownload() {
+    var userResponse = confirm("이미 다른 영상을 다운로드 중입니다. 다운로드를 멈추시겠습니까?");
+    if (userResponse) {
+        // 사용자가 '네'를 클릭했을 때의 처리
+        console.log("다운로드 멈춤");
+        alert("확인을 누르셨습니다. 다운로드를 멈췄습니다.");
+
+        // 여기에 다운로드를 멈추는 코드 구현
+
+    } else {
+        // 사용자가 '아니오'를 클릭했을 때의 처리
+        console.log("다운로드 계속 진행");
+        alert("취소를 누르셨습니다. 다운로드를 재개합니다.");
+    }
+}
