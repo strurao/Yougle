@@ -42,6 +42,11 @@
             <div class="grid-container">
                 {% for video in data.videos %}
                 <div class="card">
+                    <!-- 썸네일 이미지 추가 -->
+                    {% set thumbnail_url = 'https://img.youtube.com/vi/' ~ video.video_id ~ '/default.jpg' %}
+                    <img src="{{ thumbnail_url }}" alt="{{ video.title }}">
+                    <p> </p>
+                    <!-- 비디오 제목 링크 -->
                     <a href="{{ video.link }}" class="video-link">{{ video.title }}</a>
                     <p class="published-date">{{ video.published_at }}</p><!--업로드 날짜 표시-->
                     <!-- transcription 존재 여부에 따라 버튼 상태와 메시지를 변경합니다. -->
