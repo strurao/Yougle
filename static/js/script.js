@@ -8,6 +8,10 @@ function handleSubmit() {
 // 페이지 로드 시 enableButton 함수를 호출
 window.onload = enableButton;
 
+function redirectToHome() {
+            window.location.href = '/'; // 홈페이지 URL로 리다이렉트
+}
+
 function enableButton() {
     var button = document.getElementById('getVideosButton');
     if(button) {
@@ -47,3 +51,4 @@ function downloadSubtitle(channelId, videoId, button) {
             loader.remove();
         });
 }
+
