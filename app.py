@@ -88,7 +88,7 @@ def index():
 
     # 페이지네이션 처리는 POST와 무관하게 수행
     page = request.args.get('page', 1, type=int) # 페이지 번호 # HTTP GET
-    per_page = 30  # 한 페이지당 비디오 수
+    per_page = 20  # 한 페이지당 비디오 수
     if channel_id:
         response_data['channel_id'] = channel_id
         total_videos = videos_db_query.get_video_count(channel_id)
