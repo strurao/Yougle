@@ -63,9 +63,21 @@ def download_video(channel_id, video_id):
         print("transcription", transcription)
         videos_db_query.upsert_mongodb_trans(channel_id, video_id, transcription)
         print("app.py : upserted transcription in mongodb", channel_id, video_id, transcription)
+
+        # 여기서부터 텍스트 파일 저장 로직 추가
+        transcripts_path = os.path.join('C:\\Users\\redna\\PycharmProjects\\Yougle', 'transcripts', channel_id)
+        if not os.path.exists(transcripts_path):
+            os.makedirs(transcripts_path)
+        transcript_file_path = os.path.join(transcripts_path, f"{video_id}_transcript.txt")
+
+        with open(transcript_file_path, 'w', encoding='utf-8') as file:
+            file.write(f"video_id: {video_id}\n\nscript: ")
+            file.write(" ".join(segment['text'] for segment in transcription['segments']) + '\n')
+
     if not not_exist_json_in_mongo: # 있으면 꺼내오기
         # transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
         print("app.py : transcription already exists in mongo")
+
     return send_file(mp3_path, as_attachment=True)
 
 
