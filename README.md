@@ -8,15 +8,15 @@
 저를 포함한 개발자 **2명이서 팀 프로젝트** 를 시작하게 되었습니다.
 
 ### 담당한 기능 👩🏻‍💻
-- Schema 설계, 데이터 저장 (SQLite, MongoDB)
-- Youtube 정보 처리 (Google YouTube Data API)
-- Whisper 이용한 Subtitle 데이터 처리 (OpenAI Whisper)
-- 관리자 페이지 구성 (HTML, CSS, Javascript) 
+- Schema 설계, 데이터 저장
+- Youtube 정보 처리 
+- Whisper 이용한 Subtitle 데이터 처리 
+- 관리자 페이지 구성 
 
 ### 사용한 skill 🛠️
 - Python3.9 & Pycharm (Window, MacOS)
-- SQLite
-- MongoDB
+- Javascript, HTML, CSS
+- SQLite, MongoDB
 - [Google YouTube Data API](https://developers.google.com/youtube/v3)
 - [OpenAI Whisper](https://github.com/openai/whisper)
 
