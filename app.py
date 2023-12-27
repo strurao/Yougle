@@ -10,15 +10,37 @@ load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 
-@app.route('/view-transcription/<channel_id>/<video_id>')
-def view_transcription(channel_id, video_id):
+# 타임스탬프, 자막텍스트 보기
+@app.route('/view-time-transcription/<channel_id>/<video_id>')
+def view_time_transcription(channel_id, video_id):
     transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
     if transcription is None:
         return "Transcription not found", 404
+
+    # 각 segment 의 시간을 분:초 형식으로 변환한다.
+    for segment in transcription['segments']:
+        segment['formatted_start'] = youtube_data.format_seconds_to_min_sec(segment['start'])
     return render_template('transcription.html', transcription=transcription, video_id=video_id)
 
+# 자막텍스트 통합 보기
+@app.route('/view-entire-transcription/<channel_id>/<video_id>')
+def view_entire_transcription(channel_id, video_id):
+    transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
+    if transcription is None:
+        return "Transcription not found", 404
+
+    # 전체 스크립트를 하나의 문자열로 결합
+    entire_transcription = " ".join(segment['text'] for segment in transcription['segments'])
+    transcription_data = {
+        'video_id': video_id,
+        'script': entire_transcription
+    }
+    return render_template('entire_transcription.html', transcription=transcription_data)
+
+# mongodb에 자막 정보 저장하기
 @app.route('/download/<channel_id>/<video_id>')
 def download_video(channel_id, video_id):
+    print("0000")
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
     video = youtube.streams.filter(res='360p', progressive=True, file_extension='mp4').order_by('resolution').desc().first()
     if not video:

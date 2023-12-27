@@ -27,6 +27,8 @@ function showLoadingAnimation() {
 
 // 자막 다운로드 함수
 function downloadSubtitle(channelId, videoId, button) {
+    console.log(`Viewing transcription for Channel ID: ${channelId}, Video ID: ${videoId}`);
+
     // 버튼 비활성화 및 스타일 변경
     button.disabled = true;
     button.className = 'downloading-button';
@@ -53,10 +55,16 @@ function downloadSubtitle(channelId, videoId, button) {
         });
 }
 
-// 다운로드한 자막 펼쳐보기
-function viewDownload(channelId, videoId) {
-    console.log(`Viewing transcription for Channel ID: ${channelId}, Video ID: ${videoId}`);
-    window.location.href = `/view-transcription/${channelId}/${videoId}`;
+// 다운로드한 자막 펼쳐보기 - 타임스탬프 버전
+function viewDownloadTime(channelId, videoId) {
+    console.log(`Viewing transcription Time for Channel ID: ${channelId}, Video ID: ${videoId}`);
+    window.location.href = `/view-time-transcription/${channelId}/${videoId}`;
+}
+
+// 다운로드한 자막 펼쳐보기 - 통합 버전
+function viewDownloadEntire(channelId, videoId){
+    console.log(`Viewing transcription Entire for Channel ID: ${channelId}, Video ID: ${videoId}`);
+    window.location.href = `/view-entire-transcription/${channelId}/${videoId}`;
 }
 
 // 다운로드 중 다른 행동을 할 때 띄우는 팝업

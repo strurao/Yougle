@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- CSS 파일 참조 -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- JavaScript 파일 참조 -->
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-
     <title>Get Whisper Subtitle</title>
 </head>
 <body>
@@ -53,7 +48,8 @@
                     <!-- transcription 존재 여부에 따라 버튼 상태와 메시지를 변경합니다. -->
                     {% if video.transcription_exists %}
                         <!--<button class="exists-in-db" disabled>Downloaded</button>-->
-                        <button onclick="viewDownload('{{ data.channel_id }}', '{{ video.video_id }}')" class="view-downloaded">View Downloaded</button>
+                        <button onclick="viewDownloadTime('{{ data.channel_id }}', '{{ video.video_id }}')" class="view-downloaded">View with Time</button>
+                        <button onclick="viewDownloadEntire('{{ data.channel_id }}', '{{ video.video_id }}')" class="view-downloaded">View All</button>
                     {% else %}
                         <button onclick="downloadSubtitle('{{ data.channel_id }}', '{{ video.video_id }}', this)" class="download-link">Download Subtitle</button>
                     {% endif %}
@@ -117,5 +113,10 @@
             {{ data.error }}
         </div>
     {% endif %}
+
+    <!-- CSS 파일 참조 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- JavaScript 파일 참조 -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>
