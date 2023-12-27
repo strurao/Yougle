@@ -43,7 +43,7 @@
             <div class="grid-container">
                 {% for video in data.videos %}
                 <div class="card">
-                    <!-- 썸네일 이미지 추가 -->
+                    <!-- 영상 고유 썸네일 이미지 추가 -->
                     {% set thumbnail_url = 'https://img.youtube.com/vi/' ~ video.video_id ~ '/default.jpg' %}
                     <img src="{{ thumbnail_url }}" alt="{{ video.title }}">
                     <p> </p>
@@ -52,7 +52,8 @@
                     <p class="published-date">{{ video.published_at }}</p><!--업로드 날짜 표시-->
                     <!-- transcription 존재 여부에 따라 버튼 상태와 메시지를 변경합니다. -->
                     {% if video.transcription_exists %}
-                        <button class="exists-in-db" disabled>Downloaded</button>
+                        <!--<button class="exists-in-db" disabled>Downloaded</button>-->
+                        <button onclick="viewDownload('{{ data.channel_id }}', '{{ video.video_id }}')" class="view-downloaded">View Downloaded</button>
                     {% else %}
                         <button onclick="downloadSubtitle('{{ data.channel_id }}', '{{ video.video_id }}', this)" class="download-link">Download Subtitle</button>
                     {% endif %}

@@ -57,6 +57,7 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+/* 이미 다운로드된 자막에 대해 버튼 disable */
 .exists-in-db:disabled {
     display: inline-block;
     padding: 10px 15px;
@@ -68,7 +69,23 @@ body {
     border: none;
     transition: background-color 0.3s, transform 0.3s;
 }
-
+/* View Downloaded 이미 다운로드된 자막 펼쳐보기 */
+.view-downloaded {
+    display: inline-block;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #90EE90;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    border: none;
+    transition: background-color 0.3s, transform 0.3s;
+}
+.view-downloaded:hover {
+    background-color: #66de66;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 /* Downloading... */
 .downloading-button {
     display: inline-block;

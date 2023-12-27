@@ -10,6 +10,12 @@ load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 
+@app.route('/view-transcription/<channel_id>/<video_id>')
+def view_transcription(channel_id, video_id):
+    transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
+    if transcription is None:
+        return "Transcription not found", 404
+    return render_template('transcription.html', transcription=transcription, video_id=video_id)
 
 @app.route('/download/<channel_id>/<video_id>')
 def download_video(channel_id, video_id):

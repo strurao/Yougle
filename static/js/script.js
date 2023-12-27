@@ -10,7 +10,7 @@ window.onload = enableButton;
 
 // 새로고침
 function redirectToHome() {
-            window.location.href = '/'; // 홈페이지 URL로 리다이렉트
+    window.location.href = '/'; // 홈페이지 URL로 리다이렉트
 }
 
 function enableButton() {
@@ -51,6 +51,12 @@ function downloadSubtitle(channelId, videoId, button) {
             button.innerHTML = 'Download Subtitle';
             loader.remove();
         });
+}
+
+// 다운로드한 자막 펼쳐보기
+function viewDownload(channelId, videoId) {
+    console.log(`Viewing transcription for Channel ID: ${channelId}, Video ID: ${videoId}`);
+    window.location.href = `/view-transcription/${channelId}/${videoId}`;
 }
 
 // 다운로드 중 다른 행동을 할 때 띄우는 팝업

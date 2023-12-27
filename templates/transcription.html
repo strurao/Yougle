@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Transcription</title>
+</head>
+<body>
+    {% if transcription.segments %}
+        <ul>
+            {% for segment in transcription.segments %}
+                <li>
+                    <strong>Time:</strong> {{ segment.start }}s
+                    <strong>Text:</strong> {{ segment.text }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No transcription segments found.</p>
+    {% endif %}
+    <a href="/">Back to Home</a>
+</body>
+</html>
