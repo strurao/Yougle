@@ -8,8 +8,7 @@
         <ul>
             {% for segment in transcription.segments %}
                 <li>
-                    <strong>Time:</strong> {{ segment.start }}s
-                    <strong>Text:</strong> {{ segment.text }}
+                    [{{ segment.formatted_start }}] {{ segment.text }}
                 </li>
             {% endfor %}
         </ul>
