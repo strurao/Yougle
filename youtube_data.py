@@ -3,6 +3,7 @@ from googleapiclient.discovery import build
 import json
 import re
 import videos_db_query
+import html  # HTML 엔티티를 처리하기 위한 모듈 추가
 from moviepy.editor import VideoFileClip
 import mongo
 import os
@@ -65,19 +66,21 @@ def update_db(channel_id):
             ).execute()
 
             for item in res['items']:
+                title = html.unescape(item['snippet']['title'])  # HTML 엔티티를 일반 텍스트로 변환
                 video_info.append({ # sqlite
                     "channel_id": channel_id,
                     "video_id": item['id']['videoId'],
-                    "title": item['snippet']['title'],
+                    "title": title,
                     "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}',
                     "published_at": item['snippet']['publishedAt']  # 업로드 날짜 추가
                 })
 
             for item in res['items']:
+                title = html.unescape(item['snippet']['title'])  # HTML 엔티티를 일반 텍스트로 변환
                 video_info_mongo.append({ # mongodb
                     # "channel_id": channel_id,
                     "video_id": item['id']['videoId'],
-                    "title": item['snippet']['title'],
+                    "title": title,
                     "link": f'https://www.youtube.com/watch?v={item["id"]["videoId"]}',
                     "transcription": None, # JSON
                     "published_at": item['snippet']['publishedAt']  # 업로드 날짜 추가
