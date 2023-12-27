@@ -11,6 +11,12 @@ import os
 # api_key = 'AIzaSyALIZ8k2a6NA5-1t5Evvo3hC1KVgutheN8' # YouglePrac
 api_key = 'AIzaSyCKrtb3S0YXnbXsoh1zKLv3dieVeii_uwg' # YouglePractice
 
+# 자막 정보의 타임스탬프를 [초] 형식에서 [분:초] 형식으로 변환합니다.
+def format_seconds_to_min_sec(seconds):
+    minutes = int(seconds // 60)
+    seconds = int(seconds % 60)
+    return f"{minutes:02d}:{seconds:02d}"
+
 # mp4->mp3 변환
 def convert_mp4_to_mp3(mp4_file_path, mp3_file_path):
     video_clip = VideoFileClip(mp4_file_path)
