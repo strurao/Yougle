@@ -3,7 +3,7 @@ from whisper.utils import get_writer
 import os
 import json
 def transcribe_audio(mp3_path):
-    model = whisper.load_model('base')
+    model = whisper.load_model('medium')
     result = model.transcribe(mp3_path)
     # 각 세그먼트의 텍스트를 줄바꿈하여 출력
     print("dic result", result)
