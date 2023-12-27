@@ -17,8 +17,8 @@
 - Python3.9 & Pycharm (Window, MacOS)
 - SQLite
 - MongoDB
-- Google YouTube Data API
-- OpenAI Whisper
+- [Google YouTube Data API](https://developers.google.com/youtube/v3)
+- [OpenAI Whisper](https://github.com/openai/whisper)
 
 ### Git repository 💾
 https://github.com/strurao/Yougle 
