@@ -24,4 +24,4 @@
 https://github.com/strurao/Yougle 
 
 ### 개발 일지 📌
-[Velog 시리즈 [Project Yooougle]](https://velog.io/@strurao/series/Yougle) 에 기록 중입니다.
+[Velog 시리즈 [Project Yooougle]](https://velog.io/@strurao/series/Yougle) 에 기록 중입니다. 
