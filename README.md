@@ -1,4 +1,5 @@
-![image](https://github.com/strurao/Yougle/assets/126440235/0f436f68-c739-418e-93f7-d3f9bea5175a)
+![image](https://github.com/strurao/Yougle/assets/126440235/50ec7a75-8dbd-4cf4-a7da-4f20b408d02c)
+
 ## ✔ 프로젝트 소개
 
 >_**"영상 속 내용을 이해하는 것보다, 제대로 된 영상을 찾는 것이 어렵다!"**_
@@ -19,9 +20,3 @@
 - SQLite, MongoDB
 - [Google YouTube Data API](https://developers.google.com/youtube/v3)
 - [OpenAI Whisper](https://github.com/openai/whisper)
-
-### Git repository 💾
-https://github.com/strurao/Yougle 
-
-### 개발 일지 📌
-[Velog 시리즈 [Project Yooougle]](https://velog.io/@strurao/series/Yougle) 에 기록 중입니다. 
