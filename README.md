@@ -1,5 +1,3 @@
-![image](https://github.com/strurao/Yougle/assets/126440235/50ec7a75-8dbd-4cf4-a7da-4f20b408d02c)
-
 ## ✔ 프로젝트 소개
 
 >_**"영상 속 내용을 이해하는 것보다, 제대로 된 영상을 찾는 것이 어렵다!"**_
@@ -20,3 +18,6 @@
 - SQLite, MongoDB
 - [Google YouTube Data API](https://developers.google.com/youtube/v3)
 - [OpenAI Whisper](https://github.com/openai/whisper)
+
+### 개발일지 블로그 🖍
+https://velog.io/@strurao/series/Yougle 
