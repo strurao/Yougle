@@ -14,6 +14,7 @@
 - 관리자 페이지 구성
   - 관리자 페이지 (수동 버전) 실행 영상 보기 : https://youtu.be/u--PyyFtTIQ
 - GPTs Action Schema, API 설계
+- 현재 데이터 저장 자동화 기능을 구현 중에 있습니다.
 
 ### 📌 사용한 skill
 - Python3.9 & Pycharm (Window, MacOS)
