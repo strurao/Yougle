@@ -1,14 +1,21 @@
+# -*- coding: utf-8 -*-
+
 # flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일입니다.
-from flask import Flask, render_template, request, send_file
+import ssl
+import sys
+from flask import Flask, render_template, request, send_file, jsonify
 import youtube_data, videos_db_query, mongo, json
 from pytube import YouTube
 import whisper_trans
 import os
+import openai
 from dotenv import load_dotenv
 load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
+openai.api_key = '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'
+
 
 # 타임스탬프, 자막텍스트 보기
 @app.route('/view-time-transcription/<channel_id>/<video_id>')
@@ -42,6 +49,7 @@ def view_entire_transcription(channel_id, video_id):
 def download_video(channel_id, video_id):
     print("0000")
     youtube = YouTube(f'https://www.youtube.com/watch?v={video_id}')
+    # youtube = YouTube('https://www.youtube.com/watch?v=' + video_id)
     video = youtube.streams.filter(res='360p', progressive=True, file_extension='mp4').order_by('resolution').desc().first()
     if not video:
         return "Video not found", 404
@@ -58,6 +66,7 @@ def download_video(channel_id, video_id):
 
     # whisper, transcription
     not_exist_json_in_mongo = videos_db_query.check_transcription_none(channel_id, video_id)
+
     if not_exist_json_in_mongo: # 없으면 저장
         transcription = whisper_trans.transcribe_audio(mp3_path)
         print("transcription", transcription)
@@ -75,7 +84,7 @@ def download_video(channel_id, video_id):
             file.write(" ".join(segment['text'] for segment in transcription['segments']) + '\n')
 
     if not not_exist_json_in_mongo: # 있으면 꺼내오기
-        # transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
+        transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
         print("app.py : transcription already exists in mongo")
 
     return send_file(mp3_path, as_attachment=True)
@@ -152,9 +161,48 @@ def index():
     # sqlite 에서 innerjoin한 결과 리스트를 템플릿에 전달
 
 
+@app.route('/gpt-query', methods=['GET'])
+def gpt_query():
+    user_prompt = request.args.get('query')
+    channel_id = request.args.get('channel_id')
+
+    try:
+        # 데이터베이스에서 채널의 자막 정보를 가져옵니다.
+        transcriptions = videos_db_query.find_all_transcriptions_for_channel(channel_id)
+        if not transcriptions:
+            return jsonify({'error': 'No transcriptions found for the channel'}), 404
+
+        combined_transcription = " ".join(t['text'] for t in transcriptions)
+
+        try:
+            # OpenAI Assistant API와 상호작용합니다.
+            response = openai.ChatCompletion.create(
+                model="gpt-4 turbo",
+                messages=[
+                    {"role": "system", "content": "This is a helpful assistant."},
+                    {"role": "user", "content": user_prompt},
+                    {"role": "assistant", "content": combined_transcription}
+                ]
+            )
+
+            return jsonify({
+                'gpt_response': response.choices[0].message.content,
+            })
+
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+    except Exception as e:
+        return jsonify({'error': 'Database query failed: ' + str(e)}), 500
+
+
 if __name__ == '__main__':
     print("현재 작업 디렉토리:", os.getcwd())
     videos_db_query.create_tables_videosDB()
     # mongo.db.VideoCollection.delete_many({})
     app.run(host='203.152.178.190', port=5000, debug=True)
+    # app.run(host='0.0.0.0', port=8080, debug=True)
 
+    # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
+    # ssl_context.load_cert_chain(certfile='newcert.pem', keyfile='newkey.pem', password='secret')
+    # app.run(host='203.152.178.190', port=5000, debug=True, ssl_context=ssl_context)

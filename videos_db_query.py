@@ -2,6 +2,7 @@
 import sqlite3
 import json
 import mongo
+import pymongo
 
 # Upsert 'video', 'channel' table in MongoDB
 def save_to_mongodb(channel_id, video_info_mongo):
