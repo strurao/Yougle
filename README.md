@@ -3,9 +3,12 @@
 
 >_**"영상 속 내용을 이해하는 것보다, 제대로 된 영상을 찾는 것이 어렵다!"**_
 
-**이런 불편함을 개선할 수 있는 GPTs 서비스를 개발, 출시해볼까?** 라는 생각을 시작으로
+정보가 넘쳐나는 시대이며, 많은 사람들이 유튜브로 검색하는 시대입니다. 하지만 정보의 양이 늘어난 만큼 원하는 정보를 찾기 어려워졌습니다. 그래서 임의의 채널에서 사용자가 원하는 정보를 쉽게 검색할 수 있는 유튜브 검색 GPTs 서비스를 제작하고 있습니다. 
 
-저를 포함한 개발자 **2명이서 애자일 방법론을 적용한 팀 프로젝트** 를 진행하고 있습니다.
+Linux 클라우드 서버에서 Flask,  mongoDB, SQLite, 그리고 GPT API를 사용하여 관리자 페이지를 구현했습니다. 
+대량의 자막 JSON 정보를 저장하고 빠르게 조회하기 위해 mongoDB를, 그리고 유튜브 채널 정보를 저장하기 위해 SQLite를 사용해 CRUD기능을 처리했습니다. 현재는 작업의 자동화를 위한 REFTful API를 기반으로 작업하고 있습니다.
+
+---
 
 ### 📌 담당한 기능
 - Schema 설계, 데이터 저장
@@ -16,6 +19,8 @@
 - GPTs Action Schema, API 설계
 - 현재 데이터 저장 자동화 기능을 구현 중에 있습니다.
 
+---
+
 ### 📌 사용한 skill
 - Linux (Ubuntu)
 - vim
@@ -25,8 +30,12 @@
 - [Google YouTube Data API](https://developers.google.com/youtube/v3)
 - [OpenAI Whisper](https://github.com/openai/whisper)
 
+---
+
 ### 📌 개발일지 블로그
 https://velog.io/@strurao/series/Yougle 
+
+---
 
 ### 📌 관리자 페이지 구성
 ![image](https://github.com/strurao/Yougle/assets/126440235/6c1676e1-32cd-448e-92a5-64c62d8bb52e)
