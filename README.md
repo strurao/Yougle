@@ -17,6 +17,8 @@
 - 현재 데이터 저장 자동화 기능을 구현 중에 있습니다.
 
 ### 📌 사용한 skill
+- Linux (Ubuntu)
+- vim
 - Python3.9 & Pycharm (Window, MacOS)
 - Javascript, HTML, CSS
 - SQLite, MongoDB
