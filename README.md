@@ -12,7 +12,7 @@
 - Youtube 정보 처리 
 - Whisper 이용한 Subtitle 데이터 처리 
 - 관리자 페이지 구성
-  - 관리자 페이지 (수동 버전) 실행 영상 보기 : https://youtu.be/9sQOAvCeIBg  
+  - 관리자 페이지 (수동 버전) 실행 영상 보기 : https://youtu.be/IB5z4_KDoy8
 - GPTs Action Schema, API 설계
 
 ### 📌 사용한 skill
