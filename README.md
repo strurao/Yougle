@@ -8,7 +8,7 @@
 Linux 클라우드 서버에서 Flask,  mongoDB, SQLite, 그리고 GPT API를 사용하여 관리자 페이지를 구현했습니다. 
 대량의 자막 JSON 정보를 저장하고 빠르게 조회하기 위해 mongoDB를, 그리고 유튜브 채널 정보를 저장하기 위해 SQLite를 사용해 CRUD기능을 처리했습니다. 현재는 작업의 자동화를 위한 REFTful API를 기반으로 작업하고 있습니다.
 
-Linux (SSH) 실행 영상 보기: https://youtu.be/iGzXvx3lXD
+Linux (SSH) 실행 영상 보기: https://youtu.be/iGzXvx3lXDg
 
 ---
 ### 📌 담당한 기능
