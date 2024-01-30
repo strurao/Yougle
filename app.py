@@ -16,7 +16,6 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 openai.api_key = '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'
 
-
 # 타임스탬프, 자막텍스트 보기
 @app.route('/view-time-transcription/<channel_id>/<video_id>')
 def view_time_transcription(channel_id, video_id):
