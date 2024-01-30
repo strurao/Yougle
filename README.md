@@ -36,6 +36,8 @@ Linux 클라우드 서버에서 Flask,  mongoDB, SQLite, 그리고 GPT API를 �
 https://velog.io/@strurao/series/Yougle 
 
 ---
+### 📌 Linux Cloud 실행 화면
+![image](https://github.com/strurao/Yougle/assets/126440235/56535241-cceb-40f1-83b2-16dc7a743e53)
 
 ### 📌 관리자 페이지 구성
 ![image](https://github.com/strurao/Yougle/assets/126440235/6c1676e1-32cd-448e-92a5-64c62d8bb52e)
