@@ -22,7 +22,7 @@ Linux 클라우드 서버에서 Flask,  mongoDB, SQLite, 그리고 GPT API를 �
 ---
 
 ### 📌 사용한 skill
-- Linux (Ubuntu)
+- Linux (Ubuntu), SSH
 - vim
 - Python3.9 & Pycharm (Window, MacOS)
 - Javascript, HTML, CSS
