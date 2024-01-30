@@ -4,9 +4,14 @@ import json
 import mongo
 import pymongo
 
+# MongoDB에 연결
+client = pymongo.MongoClient("mongodb://admin:admin@localhost:27017/?authSource=admin")
+db = client["YougleDB"]  # 사용할 데이터베이스 이름으로 변경하세요
+collection = db["VideoCollection"]  # 사용할 컬렉션 이름으로 변경하세요
+
 # Upsert 'video', 'channel' table in MongoDB
 def save_to_mongodb(channel_id, video_info_mongo):
-    mongo.collection.update_one(
+    collection.update_one(
         {"channel_id": channel_id},
         {"$setOnInsert": {"videos": video_info_mongo}},
         upsert=True
@@ -14,21 +19,19 @@ def save_to_mongodb(channel_id, video_info_mongo):
     print(f"채널 ID {channel_id}의 정보가 MongoDB에 저장되었습니다.")
 
 def check_transcription_none(channel_id, video_id):
-    # MongoDB 쿼리 실행
-    result = mongo.collection.find_one(
+    result = collection.find_one(
         {"channel_id": channel_id, "videos.video_id": video_id},
         {"videos.$": 1}
     )
-    # 결과 확인 및 반환
     if result is not None and 'videos' in result:
         video_info = result['videos'][0]
-        return video_info.get('transcription') is None # null 이면 return True
+        return video_info.get('transcription') is None
     else:
-        return None  # 채널 ID 또는 비디오 ID가 잘못되었거나 결과가 없는 경우
+        return None
 
 def upsert_mongodb_trans(channel_id, video_id, transcription):
     # MongoDB에 upsert 작업 수행
-    mongo.collection.update_one(
+    collection.update_one(
         {"channel_id": channel_id, "videos.video_id": video_id},  # 찾을 문서의 조건
         {"$set": {"videos.$.transcription": transcription}},  # 업데이트할 내용
         upsert=True  # 해당하는 문서가 없으면 새로운 문서를 삽입
@@ -37,7 +40,7 @@ def upsert_mongodb_trans(channel_id, video_id, transcription):
 
 def find_mongodb_trans(channel_id, video_id):
     # MongoDB 에서 자막 정보 찾기
-    result = mongo.collection.find_one(
+    result = collection.find_one(
         {"channel_id": channel_id, "videos.video_id": video_id},
         {"videos.$": 1}  # videos 배열에서 해당 비디오 ID의 문서만 반환
     )
@@ -47,13 +50,13 @@ def find_mongodb_trans(channel_id, video_id):
     else:
         return None  # 해당하는 transcription 정보가 없는 경우
 
-# MongoDB에서 채널 정보 가져오기
 def get_videos_from_mongodb(channel_id):
-    return mongo.collection.find_one({"channel_id": channel_id})
+    # MongoDB에서 채널 정보 가져오기
+    return collection.find_one({"channel_id": channel_id})
 
-# MongoDB에 채널 ID가 있는지 확인
 def check_channel_id_in_mongodb(channel_id):
-    return mongo.collection.find_one({"channel_id": channel_id}) is not None
+    # MongoDB에 채널 ID가 있는지 확인
+    return collection.find_one({"channel_id": channel_id}) is not None
 
 def check_channel_id_in_sqlite(channel_id):
     # SQLite 데이터베이스에 연결
@@ -65,9 +68,8 @@ def check_channel_id_in_sqlite(channel_id):
         return exists == 1
 
 def check_channel_id_in_both_db(channel_id):
-    # MongoDB에서 확인
+    # MongoDB와 SQLite에서 채널 ID 확인
     in_mongodb = check_channel_id_in_mongodb(channel_id)
-    # SQLite에서 확인
     in_sqlite = check_channel_id_in_sqlite(channel_id)
     return in_mongodb and in_sqlite
 
@@ -78,7 +80,7 @@ def create_tables_videosDB():
         # channel 테이블
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS channel (
-                cid INTEGER PRIMARY KEY AUTOINCREMENT, 
+                cid INTEGER PRIMARY KEY AUTOINCREMENT,
                 channel_id TEXT,
                 channel_name TEXT
             )
@@ -290,4 +292,3 @@ def insert_into_channel_manually(channel_id):
         cursor = connect.cursor()
         if not cursor.execute("SELECT 1 FROM channel WHERE channel_id = ?", (channel_id,)).fetchone():
             cursor.execute("INSERT INTO channel (channel_id) VALUES (?)", (channel_id,))
-        connect.commit()

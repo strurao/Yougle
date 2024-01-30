@@ -1,20 +1,26 @@
-# -*- coding: utf-8 -*-
-
 # flask를 구동하고 웹페이지를 라우팅하고 렌더링하여 띄워 줄 python 파일입니다.
 import ssl
 import sys
 from flask import Flask, render_template, request, send_file, jsonify
 import youtube_data, videos_db_query, mongo, json
 from pytube import YouTube
-import whisper_trans
+# import whisper_trans
 import os
 import openai
 from dotenv import load_dotenv
+from pymongo import MongoClient
 load_dotenv('settings.env')  # 'settings.env' 파일에서 환경 변수 로드
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')  # CSRF 보호를 위한 비밀 키 설정
 openai.api_key = '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'
+
+#mongo_user = os.getenv('MONGO_USER')
+#mongo_password = os.getenv('MONGO_PWD')
+client = MongoClient('mongodb://admin:admin@localhost:27017/?authSource=admin')
+
+db = client["YougleDB"]
+collection = db["VideoCollection"]  # 사용할 컬렉션 이름으로 변경하세요
 
 # 타임스탬프, 자막텍스트 보기
 @app.route('/view-time-transcription/<channel_id>/<video_id>')
@@ -66,21 +72,21 @@ def download_video(channel_id, video_id):
     # whisper, transcription
     not_exist_json_in_mongo = videos_db_query.check_transcription_none(channel_id, video_id)
 
-    if not_exist_json_in_mongo: # 없으면 저장
-        transcription = whisper_trans.transcribe_audio(mp3_path)
-        print("transcription", transcription)
-        videos_db_query.upsert_mongodb_trans(channel_id, video_id, transcription)
-        print("app.py : upserted transcription in mongodb", channel_id, video_id, transcription)
-
-        # 여기서부터 텍스트 파일 저장 로직 추가
-        transcripts_path = os.path.join('C:\\Users\\redna\\PycharmProjects\\Yougle', 'transcripts', channel_id)
-        if not os.path.exists(transcripts_path):
-            os.makedirs(transcripts_path)
-        transcript_file_path = os.path.join(transcripts_path, f"{video_id}_transcript.txt")
-
-        with open(transcript_file_path, 'w', encoding='utf-8') as file:
-            file.write(f"video_id: {video_id}\n\nscript: ")
-            file.write(" ".join(segment['text'] for segment in transcription['segments']) + '\n')
+    # if not_exist_json_in_mongo: # 없으면 저장
+    #     transcription = whisper_trans.transcribe_audio(mp3_path)
+    #     print("transcription", transcription)
+    #     videos_db_query.upsert_mongodb_trans(channel_id, video_id, transcription)
+    #     print("app.py : upserted transcription in mongodb", channel_id, video_id, transcription)
+    #
+    #     # 여기서부터 텍스트 파일 저장 로직 추가
+    #     transcripts_path = os.path.join('C:\\Users\\redna\\PycharmProjects\\Yougle', 'transcripts', channel_id)
+    #     if not os.path.exists(transcripts_path):
+    #         os.makedirs(transcripts_path)
+    #     transcript_file_path = os.path.join(transcripts_path, f"{video_id}_transcript.txt")
+    #
+    #     with open(transcript_file_path, 'w', encoding='utf-8') as file:
+    #         file.write(f"video_id: {video_id}\n\nscript: ")
+    #         file.write(" ".join(segment['text'] for segment in transcription['segments']) + '\n')
 
     if not not_exist_json_in_mongo: # 있으면 꺼내오기
         transcription = videos_db_query.find_mongodb_trans(channel_id, video_id)
@@ -109,8 +115,14 @@ def index():
         try:
             response_data['channel_id'] = channel_id
             # bool check values
+            response_data['error'] = 'Invalid try 01!'
+
             exists_in_mongo = videos_db_query.check_channel_id_in_mongodb(channel_id)
+            response_data['error'] = 'Invalid try 02!'
+
             exists_in_sqlite = videos_db_query.check_channel_id_in_sqlite(channel_id)
+            response_data['error'] = 'Invalid try 03!'
+
             # mongo, sqlite 에 없다면 upsert. 목록을 return
             if not exists_in_mongo and not exists_in_sqlite:
             # if not exists_in_sqlite:
@@ -140,7 +152,7 @@ def index():
     if channel_id:
         response_data['channel_id'] = channel_id
         total_videos = videos_db_query.get_video_count(channel_id)
-        total_pages = (total_videos + per_page - 1) // per_page # 총 페이지 수는 전체 동영상 수를 페이지당 동영상 수로 나누어 계산
+        total_pages = (total_videos + per_page - 1) // per_page # 총 페이지 수는 전체 동영상 수를 페이지당 동영상 수로 나누 어 계산
         # 현재 페이지에 대한 정보와 함께, 채널 이름과 링크도 함께 업데이트하여 response_data에 저장
         response_data['videos'] = videos_db_query.get_videos_by_page(channel_id, page, per_page)
         response_data['video_cnt'] = videos_db_query.get_video_count(channel_id)
@@ -199,8 +211,8 @@ if __name__ == '__main__':
     print("현재 작업 디렉토리:", os.getcwd())
     videos_db_query.create_tables_videosDB()
     # mongo.db.VideoCollection.delete_many({})
-    app.run(host='203.152.178.190', port=5000, debug=True)
-    # app.run(host='0.0.0.0', port=8080, debug=True)
+    # app.run(host='203.152.178.190', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=8080, debug=True)
 
     # ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
     # ssl_context.load_cert_chain(certfile='newcert.pem', keyfile='newkey.pem', password='secret')
