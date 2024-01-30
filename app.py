@@ -115,13 +115,8 @@ def index():
         try:
             response_data['channel_id'] = channel_id
             # bool check values
-            response_data['error'] = 'Invalid try 01!'
-
             exists_in_mongo = videos_db_query.check_channel_id_in_mongodb(channel_id)
-            response_data['error'] = 'Invalid try 02!'
-
             exists_in_sqlite = videos_db_query.check_channel_id_in_sqlite(channel_id)
-            response_data['error'] = 'Invalid try 03!'
 
             # mongo, sqlite 에 없다면 upsert. 목록을 return
             if not exists_in_mongo and not exists_in_sqlite:
