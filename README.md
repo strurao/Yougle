@@ -11,7 +11,7 @@ Linux 클라우드 서버에서 Flask,  mongoDB, SQLite, 그리고 GPT API를 �
 Linux (SSH) 실행 영상 보기: https://youtu.be/iGzXvx3lXDg
 
 ---
-### 📌 담당한 기능
+### 📌 담당한 기능: 백엔드 프로그래밍
 - Schema 설계, 데이터 저장
 - Youtube 정보 처리 
 - Whisper 이용한 Subtitle 데이터 처리 
